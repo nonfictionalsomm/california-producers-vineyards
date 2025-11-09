@@ -47,6 +47,17 @@
         .napa-bg-hover:hover {
             background-color: #4C1D95; /* violet-900 */
         }
+        
+        /* Using a deep blue for the "Central Coast" theme */
+        .central-text {
+            color: #1E40AF; /* blue-800 */
+        }
+        .central-bg {
+            background-color: #1E40AF; /* blue-800 */
+        }
+        .central-bg-hover:hover {
+            background-color: #1E3A8A; /* blue-900 */
+        }
 
 
         .game-card {
@@ -106,12 +117,15 @@
                 </ul>
             </div>
             <!-- Game Mode Selection -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <button id="start-sonoma-btn" class="w-full theme-bg text-white font-bold py-3 px-4 rounded-lg theme-bg-hover transition-colors text-xl">
-                    Sonoma Challenge
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                 <button id="start-sonoma-btn" class="w-full theme-bg text-white font-bold py-3 px-4 rounded-lg theme-bg-hover transition-colors text-lg">
+                    Sonoma
                 </button>
-                <button id="start-napa-btn" class="w-full napa-bg text-white font-bold py-3 px-4 rounded-lg napa-bg-hover transition-colors text-xl">
-                    Napa Challenge
+                <button id="start-napa-btn" class="w-full napa-bg text-white font-bold py-3 px-4 rounded-lg napa-bg-hover transition-colors text-lg">
+                    Napa
+                </button>
+                <button id="start-central-btn" class="w-full central-bg text-white font-bold py-3 px-4 rounded-lg central-bg-hover transition-colors text-lg">
+                    Central Coast
                 </button>
             </div>
         </div>
@@ -119,6 +133,11 @@
 
     <!-- Main Game Container -->
     <div id="game-container" class="w-full max-w-5xl mx-auto hidden">
+        <!-- Main Menu Button -->
+        <div class="mb-4">
+            <button id="main-menu-btn" class="text-sm text-gray-500 hover:text-gray-800 transition-colors">&larr; Main Menu</button>
+        </div>
+        
         <div class="text-center mb-6">
             <h1 id="game-title" class="text-4xl md:text-5xl font-bold theme-text">Sonoma AVA Master</h1>
             <p class="text-lg text-gray-600 mt-2">Producer & Vineyard Challenge</p>
@@ -139,7 +158,8 @@
 
         <!-- Main Game Area -->
         <div class="game-card rounded-lg p-6 md:p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+            <!-- Updated grid for mobile -->
+            <div class="grid grid-cols-2 gap-4 md:gap-10">
                 <!-- Left Column -->
                 <div>
                     <h3 id="column-title" class="text-2xl font-bold text-center mb-4 theme-text">Producers</h3>
@@ -274,7 +294,7 @@
             { name: "B.A. Thieriot Vineyard", ava: "West Sonoma Coast AVA" }
         ];
 
-        // --- NAPA DATABASE ---
+        // --- NAPA DATABASE (Updated) ---
         const napaProducersData = [
             { name: "Antica", ava: "Atlas Peak AVA" },
             { name: "Au Sommet", ava: "Atlas Peak AVA" },
@@ -320,7 +340,6 @@
             { name: "Mayacamas", ava: "Mount Veeder AVA" },
             { name: "Progeny", ava: "Mount Veeder AVA" },
             { name: "Sky", ava: "Mount Veeder AVA" },
-            { name: "Blackbird", ava: "Oak Knoll District of Napa Valley AVA" },
             { name: "Hendry Ranch", ava: "Oak Knoll District of Napa Valley AVA" },
             { name: "Laird", ava: "Oak Knoll District of Napa Valley AVA" },
             { name: "Matthiasson", ava: "Oak Knoll District of Napa Valley AVA" },
@@ -393,6 +412,7 @@
             { name: "Stag's Leap Wine Cellars", ava: "Stags Leap District AVA" },
             { name: "Stags' Leap Winery", ava: "Stags Leap District AVA" },
             { name: "Steltzner", ava: "Stags Leap District AVA" },
+            { name: "Olivia Brion", ava: "Wild Horse Valley AVA" },
             { name: "Blankiet", ava: "Yountville AVA" },
             { name: "Domaine Chandon", ava: "Yountville AVA" },
             { name: "Dominus", ava: "Yountville AVA" },
@@ -421,8 +441,8 @@
             { name: "Lake", ava: "Diamond Mountain District AVA" },
             { name: "Red Rock Terrace", ava: "Diamond Mountain District AVA" },
             { name: "Volcanic Hill", ava: "Diamond Mountain District AVA" },
-            { name: "Bancroft", ava: "Howell Mountain AVA" },
-            { name: "Beatty", ava: "Howell Mountain AVA" },
+            { name: "Bancroft Ranch", ava: "Howell Mountain AVA" },
+            { name: "Beatty Ranch", ava: "Howell Mountain AVA" },
             { name: "Black Sears", ava: "Howell Mountain AVA" },
             { name: "Dragon", ava: "Howell Mountain AVA" },
             { name: "Las Posadas", ava: "Howell Mountain AVA" },
@@ -437,6 +457,7 @@
             { name: "Abel 1833", ava: "Mount Veeder AVA" },
             { name: "Mt. Veeder", ava: "Mount Veeder AVA" },
             { name: "Scaggs", ava: "Mount Veeder AVA" },
+            { name: "Blackbird", ava: "Oak Knoll District of Napa Valley AVA" },
             { name: "Backus", ava: "Oakville AVA" },
             { name: "Beckstoffer Missouri Hopper", ava: "Oakville AVA" },
             { name: "Beckstoffer To-Kalon", ava: "Oakville AVA" },
@@ -481,6 +502,76 @@
             { name: "Reese/Sleeping Lady", ava: "Yountville AVA" }
         ];
 
+        // --- CENTRAL COAST DATABASE ---
+        const centralProducersData = [
+            { name: "Wente Vineyards", ava: "Livermore Valley AVA" },
+            { name: "Concannon Vineyard", ava: "Livermore Valley AVA" },
+            { name: "Bernardus", ava: "Carmel Valley AVA" },
+            { name: "Galante Vineyards", ava: "Carmel Valley AVA" },
+            { name: "Massa Vineyard", ava: "Carmel Valley AVA" },
+            { name: "Chalone", ava: "Chalone AVA" },
+            { name: "Blair Estate", ava: "Arroyo Seco AVA" },
+            { name: "Joyce Vineyards", ava: "Arroyo Seco AVA" },
+            { name: "J. Lohr", ava: "Arroyo Seco AVA" },
+            { name: "Wente", ava: "Arroyo Seco AVA" },
+            { name: "Delicato Family Vineyards", ava: "San Bernabe AVA" },
+            { name: "Siduri", ava: "Santa Lucia Highlands AVA" },
+            { name: "Roar", ava: "Santa Lucia Highlands AVA" },
+            { name: "Morgan", ava: "Santa Lucia Highlands AVA" },
+            { name: "Kosta Browne", ava: "Santa Lucia Highlands AVA" },
+            { name: "Paul Lato", ava: "Santa Lucia Highlands AVA" },
+            { name: "Lepe Cellars", ava: "San Antonio Valley AVA" },
+            { name: "Line Shack", ava: "San Antonio Valley AVA" },
+            { name: "Eden Rift", ava: "Cienega Valley AVA" },
+            { name: "I.Brand & Family", ava: "Cienega Valley AVA" },
+            { name: "Calera", ava: "Gabilan Mountains AVA" },
+            { name: "Chalone", ava: "Gabilan Mountains AVA" },
+            { name: "Calera", ava: "Mt. Harlan AVA" },
+            { name: "Donati Family", ava: "Paicines AVA" },
+            { name: "Puma Road", ava: "Paicines AVA" },
+            { name: "Tablas Creek", ava: "Paso Robles AVA" },
+            { name: "Justin", ava: "Paso Robles AVA" },
+            { name: "Saxum", ava: "Paso Robles AVA" },
+            { name: "Austin Hope", ava: "Paso Robles AVA" },
+            { name: "J. Lohr", ava: "Paso Robles AVA" },
+            { name: "Adelaida Cellars", ava: "Adelaida District AVA" },
+            { name: "Tablas Creek", ava: "Adelaida District AVA" },
+            { name: "Daou", ava: "Adelaida District AVA" },
+            { name: "Absolution Cellars", ava: "Creston District AVA" },
+            { name: "Chateau Margene", ava: "Creston District AVA" },
+            { name: "Bovino Vineyards", ava: "El Pomar District AVA" },
+            { name: "J. Lohr", ava: "El Pomar District AVA" },
+            { name: "Stilson Cellars", ava: "El Pomar District AVA" },
+            { name: "Eberle Winery", ava: "Paso Robles Estrella District AVA" },
+            { name: "J. Lohr", ava: "Paso Robles Estrella District AVA" },
+            { name: "Broken Earth", ava: "Paso Robles Estrella District AVA" },
+            { name: "Meridien Cellars", ava: "Paso Robles Estrella District AVA" },
+            { name: "Cass", ava: "Paso Robles Geneseo District AVA" },
+            { name: "Thatcher Winery", ava: "Paso Robles Highlands AVA" },
+            { name: "Reciprocity", ava: "Paso Robles Highlands AVA" },
+            { name: "Saxum", ava: "Paso Robles Willow Creek District AVA" },
+            { name: "Linnie Calodo", ava: "Paso Robles Willow Creek District AVA" },
+            { name: "Terry Hoage", ava: "Paso Robles Willow Creek District AVA" },
+            { name: "Sycamore Ranch", ava: "San Miguel District AVA" },
+            { name: "Austin Hope", ava: "Templeton Gap AVA" },
+            { name: "Four Lanterns", ava: "Templeton Gap AVA" },
+            { name: "Dunites", ava: "SLO Coast AVA" },
+            { name: "Phelan Farm", ava: "SLO Coast AVA" },
+            { name: "Talley Vineyards", ava: "Arroyo Grande Valley AVA" },
+            { name: "Laetitia Vineyard", ava: "Arroyo Grande Valley AVA" },
+            { name: "Alban Vineyards", ava: "Edna Valley AVA" },
+            { name: "Tolosa Winery", ava: "Edna Valley AVA" },
+            { name:E: "Lindquist Vineyard", ava: "Edna Valley AVA" },
+            { name: "Epoch Wines", ava: "York Mountain AVA" }
+        ];
+
+        const centralVineyardsData = [
+            { name: "Hames Valley Vineyard", ava: "Hames Valley AVA" },
+            { name: "Pisoni Vineyard", ava: "Santa Lucia Highlands AVA" },
+            { name: "Gary's Vineyard", ava: "Santa Lucia Highlands AVA" },
+            { name: "Enz Vineyard", ava: "Lime Kiln Valley AVA" }
+        ];
+
         // --- GAME DATA WRAPPERS ---
         const sonomaGameData = {
             title: "Sonoma AVA Master",
@@ -496,6 +587,13 @@
             theme: "napa-text" // Purple
         };
 
+        const allCentralData = [...centralProducersData, ...centralVineyardsData];
+        const centralGameData = {
+            title: "Central Coast Master",
+            allData: allCentralData, // Combined list
+            theme: "central-text" // Blue
+        };
+
         // --- GAME STATE ---
         let currentRound = 1;
         let totalScore = 0;
@@ -507,13 +605,15 @@
         let selectedRight = null;
         let matchesMade = 0;
         let firstAttemptMap = new Map();
-        let activeGameData = null; // Will be set to sonomaGameData or napaGameData
+        let activeGameData = null; // Will be set to one of the game data wrappers
 
         // --- DOM ELEMENTS ---
         const gameContainer = document.getElementById('game-container');
         const startModal = document.getElementById('start-modal');
         const startSonomaBtn = document.getElementById('start-sonoma-btn');
         const startNapaBtn = document.getElementById('start-napa-btn');
+        const startCentralBtn = document.getElementById('start-central-btn');
+        const mainMenuBtn = document.getElementById('main-menu-btn');
         const gameTitle = document.getElementById('game-title');
         const scoreInfo = document.getElementById('score-info');
         const roundInfo = document.getElementById('round-info');
@@ -540,15 +640,22 @@
 
         /** Selects 5 unique items from a data source for the round. */
         function getRoundData() {
-            // Determine data source based on round number and active game
-            const roundGroup = Math.floor((currentRound - 1) / 5);
             let dataSource;
-            if (roundGroup === 0 || roundGroup === 2) {
-                dataSource = activeGameData.producers;
-                columnTitle.textContent = "Producers";
+            
+            if (activeGameData.allData) {
+                // Use combined list for Central Coast
+                dataSource = activeGameData.allData;
+                columnTitle.textContent = "Producers & Vineyards";
             } else {
-                dataSource = activeGameData.vineyards;
-                columnTitle.textContent = "Vineyards";
+                // Use separate lists for Sonoma and Napa
+                const roundGroup = Math.floor((currentRound - 1) / 5);
+                if (roundGroup === 0 || roundGroup === 2) {
+                    dataSource = activeGameData.producers;
+                    columnTitle.textContent = "Producers";
+                } else {
+                    dataSource = activeGameData.vineyards;
+                    columnTitle.textContent = "Vineyards";
+                }
             }
 
             const shuffledSource = [...dataSource];
@@ -595,23 +702,28 @@
         /** Applies correct theme colors */
         function applyTheme() {
             const themeClass = activeGameData.theme;
-            const otherTheme = (themeClass === "theme-text") ? "napa-text" : "theme-text";
+            const themes = ["theme-text", "napa-text", "central-text"];
+            const otherThemes = themes.filter(t => t !== themeClass);
             
-            // Remove other theme, add current theme
+            // Apply theme to titles
             [gameTitle, columnTitle, columnAvaTitle, gameOverTitle, finalScoreMessage].forEach(el => {
-                el.classList.remove(otherTheme);
+                el.classList.remove(...otherThemes);
                 el.classList.add(themeClass);
             });
             
-            // Update button styles on modals
-            const nextButtonTheme = (themeClass === "napa-text") ? "napa-bg" : "theme-bg";
-            const nextButtonHover = (themeClass === "napa-text") ? "napa-bg-hover" : "theme-bg-hover";
-            const otherNextButtonTheme = (themeClass === "napa-text") ? "theme-bg" : "napa-bg";
-            const otherNextButtonHover = (themeClass === "napa-text") ? "theme-bg-hover" : "napa-bg-hover";
-            
+            // Apply theme to modal buttons
+            const buttonThemes = {
+                "theme-text": ["theme-bg", "theme-bg-hover"],
+                "napa-text": ["napa-bg", "napa-bg-hover"],
+                "central-text": ["central-bg", "central-bg-hover"]
+            };
+            const [bgClass, hoverClass] = buttonThemes[themeClass];
+            const otherBg = Object.values(buttonThemes).map(t => t[0]).filter(c => c !== bgClass);
+            const otherHover = Object.values(buttonThemes).map(t => t[1]).filter(c => c !== hoverClass);
+
             [nextRoundBtn, playAgainBtn].forEach(btn => {
-                btn.classList.remove(otherNextButtonTheme, otherNextButtonHover);
-                btn.classList.add(nextButtonTheme, nextButtonHover);
+                btn.classList.remove(...otherBg, ...otherHover);
+                btn.classList.add(bgClass, hoverClass);
             });
         }
 
@@ -624,6 +736,12 @@
             startModal.classList.add('hidden');
             gameContainer.classList.remove('hidden');
             initGame();
+        }
+        
+        function goToMainMenu() {
+            gameContainer.classList.add('hidden');
+            startModal.classList.remove('hidden');
+            activeGameData = null; // Reset
         }
 
         function initGame() {
@@ -735,8 +853,8 @@
                 }
                 scoreInfo.textContent = totalScore;
                 
-                // Check if round is over
-                if (matchesMade === itemsPerRound) {
+                // Check if round is over (match count equals number of items)
+                if (matchesMade === leftColumn.children.length) {
                     setTimeout(showSuccessModal, 500);
                 }
             } else {
@@ -824,15 +942,15 @@
             setTimeout(() => {
                 gameOverModal.classList.add('hidden');
                 // Show start modal instead of restarting
-                startModal.classList.remove('hidden'); 
-                gameContainer.classList.add('hidden');
-                activeGameData = null; // Reset
+                goToMainMenu();
             }, 200);
         }
 
         // --- EVENT LISTENERS ---
         startSonomaBtn.addEventListener('click', () => startGameFlow(sonomaGameData));
         startNapaBtn.addEventListener('click', () => startGameFlow(napaGameData));
+        startCentralBtn.addEventListener('click', () => startGameFlow(centralGameData));
+        mainMenuBtn.addEventListener('click', goToMainMenu);
         
         nextRoundBtn.addEventListener('click', hideSuccessModal);
         playAgainBtn.addEventListener('click', hideGameOver);
