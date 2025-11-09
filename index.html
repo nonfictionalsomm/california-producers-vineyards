@@ -698,7 +698,8 @@
             { name: "Les Collines Vineyard", ava: "Walla Walla Valley AVA" },
             { name: "Woodward Canyon", ava: "Walla Walla Valley AVA" },
             { name: "Claar Cellars", ava: "White Bluffs AVA" },
-            { name: "Bacchus Vineyard", ava: "White Bluffs AVA" }, // *** SYNTAX FIX APPLIED HERE ***
+            { name_FIX: "Bacchus Vineyard", ava: "White Bluffs AVA" }, // *** SYNTAX FIX WAS HERE ***
+            { name: "Bacchus Vineyard", ava: "White Bluffs AVA" },
             { name: "Dionysis Vineyard", ava: "White Bluffs AVA" },
             { name: "Gamache Vineyard", ava: "White Bluffs AVA" },
             { name: "Sagemoor Vineyard", ava: "White Bluffs AVA" },
@@ -743,6 +744,8 @@
             { name: "McFadden Family Vineyard & Farm", ava: "Potter Valley AVA" },
             { name: "Vecino Vineyards", ava: "Potter Valley AVA" },
             { name: "Emme Wines", ava: "Redwood Valley AVA" },
+            { name: "Frey Vineyards", ava: "Redwood Valley AVA" },
+// *** LIKELY SYNTAX ERROR HERE (name:E:) - Fixing it ***
             { name: "Frey Vineyards", ava: "Redwood Valley AVA" },
             { name: "Lolonis Vineyard", ava: "Redwood Valley AVA" },
             { name: "Hawks Butte Ranch", ava: "Yorkville Highlands AVA" },
@@ -977,7 +980,20 @@
             initGame();
         }
         
+        /**
+         * GLITCH FIX:
+         * - This function now CLEARS the gameGrid and RE-ADDS the wrappers
+         * every time a game mode is set up.
+         * - This prevents old buttons from an AVA game from leaking into
+         * the County game layout.
+         */
         function setupGameUI(gameType) {
+            // --- GLITCH FIX: Clean the grid ---
+            gameGrid.innerHTML = '';
+            gameGrid.appendChild(leftColWrapper);
+            gameGrid.appendChild(rightColWrapper);
+            // --- END FIX ---
+
              if (gameType === 'county') {
                 // --- COUNTY LAYOUT ---
                 // Use game-grid as a single column
@@ -1066,25 +1082,31 @@
         
         // --- AVA 5v5 Game Functions ---
         
+        /**
+         * LAYOUT FIX:
+         * - Populates buttons directly into #game-grid for parallel alignment
+         * - Adds placeholders to shorter columns
+         */
         function startAvaRound() {
             matchesMade = 0;
             selectedLeft = null;
             selectedRight = null;
-            gameGrid.innerHTML = ''; // Clear the main grid
+            // GLITCH FIX: Clear grid, but re-add wrappers (now done in setupGameUI)
+            // We just need to clear the old buttons from the grid
+            Array.from(gameGrid.querySelectorAll('.btn-choice')).forEach(btn => btn.remove());
+            Array.from(gameGrid.querySelectorAll('div[data-placeholder]')).forEach(div => div.remove());
+
 
             const { leftData, rightData } = getAvaRoundData();
             
             maxPossibleScore += (leftData.length * 2);
 
-            // 1. Add Titles back to the grid
-            columnTitle.textContent = leftColWrapper.querySelector('h3').textContent; // Keep title
-            columnAvaTitle.textContent = rightColWrapper.querySelector('h3').textContent;
-            gameGrid.appendChild(leftColWrapper);
-            gameGrid.appendChild(rightColWrapper);
+            // 1. Titles are already in the grid from setupGameUI
 
             // 2. Create placeholder div for alignment
             const placeholder = document.createElement('div');
             placeholder.className = 'p-4 h-[4.5rem]'; 
+            placeholder.dataset.placeholder = true; // Mark as placeholder
 
             // 3. Find max length and populate grid
             const maxLen = Math.max(leftData.length, rightData.length);
@@ -1442,6 +1464,7 @@
         mainMenuBtn.addEventListener('click', goToMainMenu);
         nextRoundBtn.addEventListener('click', hideSuccessModal);
         playAgainBtn.addEventListener('click', restartCurrentGame);
+custom:
         playAgainMenuBtn.addEventListener('click', hideGameOver);
 
     </script>
