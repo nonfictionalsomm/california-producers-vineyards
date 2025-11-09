@@ -1156,15 +1156,36 @@
         function startCountyRound() {
             currentCountyRoundData = activeGameData.data[currentRound - 1];
             correctCountiesSet = new Set(currentCountyRoundData.counties);
+            const correctCounties = currentCountyRoundData.counties;
             countiesRemaining = correctCountiesSet.size;
             
             maxPossibleScore += (countiesRemaining * 2);
             
             updateCountyPrompt();
             rightColumn.innerHTML = ''; // Clear old grid
+
+            // --- NEW LOGIC ---
+            // Create a challenging but not overwhelming pool of counties
+
+            const maxPoolSize = 30; // Max 30 buttons on screen
             
-            // Populate grid with all possible counties
-            activeGameData.allCounties.forEach(countyName => {
+            // 1. Get all possible distractors (all counties EXCEPT the correct ones)
+            const possibleDistractors = activeGameData.allCounties.filter(county => !correctCountiesSet.has(county));
+            shuffleArray(possibleDistractors);
+
+            // 2. Calculate how many distractors we need
+            const numDistractorsNeeded = Math.max(0, maxPoolSize - correctCounties.length);
+
+            // 3. Get the distractors
+            const distractors = possibleDistractors.slice(0, numDistractorsNeeded);
+
+            // 4. Create the final pool for this round (correct + distractors)
+            const roundCountyPool = [...correctCounties, ...distractors];
+            shuffleArray(roundCountyPool); // Shuffle them together
+            // --- END NEW LOGIC ---
+            
+            // Populate grid with the new, smaller pool
+            roundCountyPool.forEach(countyName => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-choice w-full text-center rounded-lg font-semibold';
                 btn.textContent = countyName;
@@ -1172,45 +1193,6 @@
                 btn.addEventListener('click', () => handleCountyClick(btn, countyName));
                 rightColumn.appendChild(btn);
             });
-        }
-        
-        function handleCountyClick(btn, countyName) {
-            if (btn.disabled) return; // Already correct
-            
-            const isFirst = !firstAttemptMap.has(countyName);
-            firstAttemptMap.set(countyName, true); // Mark as attempted
-            
-            if (correctCountiesSet.has(countyName)) {
-                // --- CORRECT ---
-                btn.classList.remove('incorrect');
-                btn.classList.add('correct');
-                btn.disabled = true;
-                
-                if (isFirst) {
-                    totalScore += 2;
-                } else {
-                    totalScore += 1;
-                }
-                
-                countiesRemaining--;
-                updateCountyPrompt();
-                
-                if (countiesRemaining === 0) {
-                    setTimeout(showSuccessModal, 500);
-                }
-                
-            } else {
-                // --- INCORRECT ---
-                if (!btn.classList.contains('incorrect')) {
-                     btn.classList.add('incorrect');
-                }
-                totalScore = Math.max(0, totalScore - 1);
-            }
-            scoreInfo.textContent = totalScore;
-        }
-        
-        function updateCountyPrompt() {
-            columnTitle.textContent = `${currentCountyRoundData.ava} (${countiesRemaining} left)`;
         }
 
 
