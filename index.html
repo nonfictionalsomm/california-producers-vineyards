@@ -116,9 +116,39 @@
 <body class="flex items-center justify-center min-h-screen">
 
     <div id="start-modal" class="fixed inset-0 z-50 flex justify-center p-4 modal-backdrop overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-3xl w-full text-center transform transition-all my-8">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-3xl w-full text-center transform transition-all my-8">
             <h2 class="text-4xl font-bold mb-4 theme-text">AVA Challenge</h2>
-            <p class="text-lg mb-6 text-left text-gray-700">Test your knowledge by matching Producers, Vineyards, or Counties to their correct AVAs.</p>
+            <p class="text-lg mb-8 text-gray-700">Please select a game mode to begin.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                 <button data-game="sonoma" class="w-full theme-bg text-white font-bold py-3 px-4 rounded-lg theme-bg-hover transition-colors text-lg">
+                    Sonoma
+                </button>
+                <button data-game="napa" class="w-full napa-bg text-white font-bold py-3 px-4 rounded-lg napa-bg-hover transition-colors text-lg">
+                    Napa
+                </button>
+                <button data-game="central" class="w-full central-bg text-white font-bold py-3 px-4 rounded-lg central-bg-hover transition-colors text-lg">
+                    Central Coast
+                </button>
+                <button data-game="oregon" class="w-full oregon-bg text-white font-bold py-3 px-4 rounded-lg oregon-bg-hover transition-colors text-lg">
+                    Oregon
+                </button>
+                <button data-game="washington" class="w-full washington-bg text-white font-bold py-3 px-4 rounded-lg washington-bg-hover transition-colors text-lg">
+                    Washington
+                </button>
+                 <button data-game="sierra" class="w-full sierra-bg text-white font-bold py-3 px-4 rounded-lg sierra-bg-hover transition-colors text-lg">
+                    Sierra/Mendo/Lake
+                </button>
+                <button data-game="county" class="w-full county-bg text-white font-bold py-3 px-4 rounded-lg county-bg-hover transition-colors text-lg">
+                    CA Counties
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="rules-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center transform transition-all scale-95 opacity-0">
+            <h2 class="text-4xl font-bold mb-4 theme-text">Game Rules</h2>
             <div class="text-left space-y-3 mb-8 theme-bg-light p-4 rounded-lg border theme-border-light">
                 <p><strong class="theme-text">GOAL:</strong> Match the items in the left column to the correct AVA in the right column. Or, find all counties for a given AVA.</p>
                 <p><strong class="theme-text">SCORING:</strong></p>
@@ -128,31 +158,12 @@
                     <li><span class="font-bold text-red-700">-1 point</span> for an incorrect match.</li>
                 </ul>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                 <button id="start-sonoma-btn" class="w-full theme-bg text-white font-bold py-3 px-4 rounded-lg theme-bg-hover transition-colors text-lg">
-                    Sonoma
-                </button>
-                <button id="start-napa-btn" class="w-full napa-bg text-white font-bold py-3 px-4 rounded-lg napa-bg-hover transition-colors text-lg">
-                    Napa
-                </button>
-                <button id="start-central-btn" class="w-full central-bg text-white font-bold py-3 px-4 rounded-lg central-bg-hover transition-colors text-lg">
-                    Central Coast
-                </button>
-                <button id="start-oregon-btn" class="w-full oregon-bg text-white font-bold py-3 px-4 rounded-lg oregon-bg-hover transition-colors text-lg">
-                    Oregon
-                </button>
-                <button id="start-washington-btn" class="w-full washington-bg text-white font-bold py-3 px-4 rounded-lg washington-bg-hover transition-colors text-lg">
-                    Washington
-                </button>
-                 <button id="start-sierra-btn" class="w-full sierra-bg text-white font-bold py-3 px-4 rounded-lg sierra-bg-hover transition-colors text-lg">
-                    Sierra/Mendo/Lake
-                </button>
-                <button id="start-county-btn" class="w-full county-bg text-white font-bold py-3 px-4 rounded-lg county-bg-hover transition-colors text-lg">
-                    CA Counties
-                </button>
-            </div>
+            <button id="begin-game-btn" class="w-full theme-bg text-white font-bold py-3 px-4 rounded-lg theme-bg-hover transition-colors text-lg">
+                Begin
+            </button>
         </div>
     </div>
+
 
     <div id="game-container" class="w-full max-w-5xl mx-auto hidden p-4"> 
         <div class="mb-4">
@@ -768,64 +779,60 @@
 
 
         // --- GAME DATA WRAPPERS ---
-        const sonomaGameData = {
-            title: "Sonoma AVA Master",
-            producers: sonomaProducersData,
-            vineyards: sonomaVineyardsData,
-            theme: "theme-text", // Green
-            totalRounds: 20,
-            gameType: 'ava'
-        };
-        
-        const napaGameData = {
-            title: "Napa AVA Master",
-            producers: napaProducersData,
-            vineyards: napaVineyardsData,
-            theme: "napa-text", // Purple
-            totalRounds: 20,
-            gameType: 'ava'
-        };
-
-        const allCentralData = [...centralProducersData, ...centralVineyardsData];
-        const centralGameData = {
-            title: "Central Coast Master",
-            allData: allCentralData, // Combined list
-            theme: "central-text", // Blue
-            totalRounds: 20,
-            gameType: 'ava'
-        };
-
-        const oregonGameData = {
-            title: "Oregon AVA Master",
-            allData: allOregonData,
-            theme: "oregon-text", // Emerald
-            totalRounds: 10,
-            gameType: 'ava'
-        };
-
-        const washingtonGameData = {
-            title: "Washington AVA Master",
-            allData: allWashingtonData,
-            theme: "washington-text", // Sky
-            totalRounds: 10,
-            gameType: 'ava'
-        };
-
-        const sierraMendoLakeGameData = {
-            title: "Sierra/Mendo/Lake Master",
-            allData: allSierraMendoLakeData,
-            theme: "sierra-text", // Amber
-            totalRounds: 10,
-            gameType: 'ava'
-        };
-
-        const countyGameData = {
-            title: "CA County Master",
-            data: countyData,
-            allCounties: allCounties,
-            theme: "county-text", // Poppy
-            totalRounds: 20,
-            gameType: 'county'
+        // NEW: Game data objects now just hold the data
+        const gameModes = {
+            sonoma: {
+                title: "Sonoma AVA Master",
+                producers: sonomaProducersData,
+                vineyards: sonomaVineyardsData,
+                theme: "theme-text",
+                totalRounds: 20,
+                gameType: 'ava'
+            },
+            napa: {
+                title: "Napa AVA Master",
+                producers: napaProducersData,
+                vineyards: napaVineyardsData,
+                theme: "napa-text",
+                totalRounds: 20,
+                gameType: 'ava'
+            },
+            central: {
+                title: "Central Coast Master",
+                allData: [...centralProducersData, ...centralVineyardsData],
+                theme: "central-text",
+                totalRounds: 20,
+                gameType: 'ava'
+            },
+            oregon: {
+                title: "Oregon AVA Master",
+                allData: allOregonData,
+                theme: "oregon-text",
+                totalRounds: 10,
+                gameType: 'ava'
+            },
+            washington: {
+                title: "Washington AVA Master",
+                allData: allWashingtonData,
+                theme: "washington-text",
+                totalRounds: 10,
+                gameType: 'ava'
+            },
+            sierra: {
+                title: "Sierra/Mendo/Lake Master",
+                allData: allSierraMendoLakeData,
+                theme: "sierra-text",
+                totalRounds: 10,
+                gameType: 'ava'
+            },
+            county: {
+                title: "CA County Master",
+                data: countyData,
+                allCounties: allCounties,
+                theme: "county-text",
+                totalRounds: 20,
+                gameType: 'county'
+            }
         };
 
         // --- GAME STATE ---
@@ -846,18 +853,11 @@
         let countiesRemaining = 0;
 
         let firstAttemptMap = new Map(); // Used by both games, reset each round
-        let activeGameData = null;
+        let activeGameData = null; // This will hold the gameData for the selected mode
 
         // --- DOM ELEMENTS ---
         const gameContainer = document.getElementById('game-container');
         const startModal = document.getElementById('start-modal');
-        const startSonomaBtn = document.getElementById('start-sonoma-btn');
-        const startNapaBtn = document.getElementById('start-napa-btn');
-        const startCentralBtn = document.getElementById('start-central-btn');
-        const startOregonBtn = document.getElementById('start-oregon-btn');
-        const startWashingtonBtn = document.getElementById('start-washington-btn');
-        const startSierraBtn = document.getElementById('start-sierra-btn');
-        const startCountyBtn = document.getElementById('start-county-btn');
         const mainMenuBtn = document.getElementById('main-menu-btn');
         const gameTitle = document.getElementById('game-title');
         const scoreInfo = document.getElementById('score-info');
@@ -875,6 +875,8 @@
         const rightColumn = document.getElementById('right-column'); // Re-used for county grid
 
         // Modals
+        const rulesModal = document.getElementById('rules-modal'); // NEW
+        const beginGameBtn = document.getElementById('begin-game-btn'); // NEW
         const successModal = document.getElementById('success-modal');
         const gameOverModal = document.getElementById('game-over-modal');
         const gameOverTitle = document.getElementById('game-over-title');
@@ -895,6 +897,7 @@
         
         /** Applies correct theme colors */
         function applyTheme() {
+            if (!activeGameData) return; // Guard clause
             const themeClass = activeGameData.theme;
             const themes = ["theme-text", "napa-text", "central-text", "oregon-text", "washington-text", "sierra-text", "county-text"];
             const otherThemes = themes.filter(t => t !== themeClass);
@@ -924,8 +927,8 @@
             const otherBg = Object.values(buttonThemes).map(t => t[0]).filter(c => c !== bgClass);
             const otherHover = Object.values(buttonThemes).map(t => t[1]).filter(c => c !== hoverClass);
 
-            // Apply to Next Round and Play Again (Restart) buttons
-            [nextRoundBtn, playAgainBtn].forEach(btn => {
+            // Apply to Next Round, Play Again (Restart), and Begin Game buttons
+            [nextRoundBtn, playAgainBtn, beginGameBtn].forEach(btn => {
                 btn.classList.remove(...otherBg, ...otherHover);
                 btn.classList.add(bgClass, hoverClass);
             });
@@ -933,12 +936,39 @@
 
         // --- GAME LOGIC ---
 
+        /**
+         * NEW FUNCTION:
+         * Called by main menu buttons. Stores the selected game data
+         * and shows the rules modal.
+         */
+        function showRules(gameData) {
+            activeGameData = gameData;
+            applyTheme(); // Apply theme to the "Begin" button
+            rulesModal.classList.remove('hidden');
+            setTimeout(() => {
+                rulesModal.firstElementChild.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        /**
+         * NEW FUNCTION:
+         * Called by the "Begin" button on the rules modal.
+         * Hides the rules and starts the game flow.
+         */
+        function confirmStartGame() {
+            rulesModal.firstElementChild.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                rulesModal.classList.add('hidden');
+                startGameFlow(activeGameData); // Start the game with the stored data
+            }, 200);
+        }
+
         function startGameFlow(gameData) {
             activeGameData = gameData; // Includes gameType
             totalRounds = activeGameData.totalRounds;
             gameTitle.textContent = activeGameData.title;
             
-            applyTheme();
+            applyTheme(); // Apply theme to game elements
             setupGameUI(activeGameData.gameType);
             
             startModal.classList.add('hidden');
@@ -947,12 +977,6 @@
             initGame();
         }
         
-        /**
-         * LAYOUT FIX:
-         * - 'ava' mode now hides the #left-column and #right-column divs
-         * - 'ava' mode will populate buttons directly into #game-grid
-         * - 'county' mode hides the column *wrappers* and uses #game-grid as a single column
-         */
         function setupGameUI(gameType) {
              if (gameType === 'county') {
                 // --- COUNTY LAYOUT ---
@@ -1004,7 +1028,12 @@
         
         function goToMainMenu() {
             gameContainer.classList.add('hidden');
+            // Show the start modal (main menu)
             startModal.classList.remove('hidden');
+            // Ensure rules modal is hidden
+            rulesModal.classList.add('hidden');
+            rulesModal.firstElementChild.classList.add('scale-95', 'opacity-0');
+            
             activeGameData = null; // Reset
         }
 
@@ -1037,11 +1066,6 @@
         
         // --- AVA 5v5 Game Functions ---
         
-        /**
-         * LAYOUT FIX:
-         * - Populates buttons directly into #game-grid for parallel alignment
-         * - Adds placeholders to shorter columns
-         */
         function startAvaRound() {
             matchesMade = 0;
             selectedLeft = null;
@@ -1053,7 +1077,6 @@
             maxPossibleScore += (leftData.length * 2);
 
             // 1. Add Titles back to the grid
-            // (The wrappers are still in the HTML, we just add them to the grid)
             columnTitle.textContent = leftColWrapper.querySelector('h3').textContent; // Keep title
             columnAvaTitle.textContent = rightColWrapper.querySelector('h3').textContent;
             gameGrid.appendChild(leftColWrapper);
@@ -1061,7 +1084,6 @@
 
             // 2. Create placeholder div for alignment
             const placeholder = document.createElement('div');
-            // Height must match .btn-choice-lg (h-16 is 4rem, p-4 is 2rem... h-[4.5rem] is safer)
             placeholder.className = 'p-4 h-[4.5rem]'; 
 
             // 3. Find max length and populate grid
@@ -1407,20 +1429,20 @@
         }
 
         // --- EVENT LISTENERS ---
-        startSonomaBtn.addEventListener('click', () => startGameFlow(sonomaGameData));
-        startNapaBtn.addEventListener('click', () => startGameFlow(napaGameData));
-        startCentralBtn.addEventListener('click', () => startGameFlow(centralGameData));
-        startOregonBtn.addEventListener('click', () => startGameFlow(oregonGameData));
-        startWashingtonBtn.addEventListener('click', () => startGameFlow(washingtonGameData));
-        startSierraBtn.addEventListener('click', () => startGameFlow(sierraMendoLakeGameData));
-        startCountyBtn.addEventListener('click', () => startGameFlow(countyGameData));
+        
+        // NEW: Updated event listeners to point to showRules()
+        document.querySelectorAll('#start-modal button').forEach(btn => {
+            const gameName = btn.dataset.game;
+            if (gameName) {
+                btn.addEventListener('click', () => showRules(gameModes[gameName]));
+            }
+        });
+        
+        beginGameBtn.addEventListener('click', confirmStartGame); // NEW
         mainMenuBtn.addEventListener('click', goToMainMenu);
-        
         nextRoundBtn.addEventListener('click', hideSuccessModal);
-        
-        // NEW: Updated listeners for the two game over buttons
-        playAgainBtn.addEventListener('click', restartCurrentGame); // Restarts current mode
-        playAgainMenuBtn.addEventListener('click', hideGameOver); // Goes to main menu
+        playAgainBtn.addEventListener('click', restartCurrentGame);
+        playAgainMenuBtn.addEventListener('click', hideGameOver);
 
     </script>
 </body>
