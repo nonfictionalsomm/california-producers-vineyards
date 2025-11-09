@@ -53,6 +53,11 @@
         .sierra-bg { background-color: #92400E; }
         .sierra-bg-hover:hover { background-color: #78350F; }
 
+        /* CA County Theme (Poppy) */
+        .county-text { color: #D95A00; }
+        .county-bg { background-color: #D95A00; }
+        .county-bg-hover:hover { background-color: #B34B00; }
+
         /* Game styles */
         .game-card {
             background-color: #FFFFFF;
@@ -63,6 +68,12 @@
             transition: all 0.2s ease-in-out;
             border: 2px solid #DED1C1;
             background-color: #fff;
+            padding: 0.75rem; /* Standard padding for county buttons */
+            font-size: 0.875rem; /* Smaller text for county buttons */
+        }
+        .btn-choice-lg {
+             padding: 1rem; /* Original padding for 5v5 game */
+             font-size: 1rem;
         }
         .btn-choice:not(:disabled):hover {
             background-color: #FDF8F2;
@@ -98,11 +109,11 @@
 
     <!-- Start Game Modal -->
     <div id="start-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full text-center transform transition-all">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-3xl w-full text-center transform transition-all">
             <h2 class="text-4xl font-bold mb-4 theme-text">AVA Challenge</h2>
-            <p class="text-lg mb-6 text-left text-gray-700">Test your knowledge by matching Producers and Vineyards to their correct AVAs.</p>
+            <p class="text-lg mb-6 text-left text-gray-700">Test your knowledge by matching Producers, Vineyards, or Counties to their correct AVAs.</p>
             <div class="text-left space-y-3 mb-8 theme-bg-light p-4 rounded-lg border theme-border-light">
-                <p><strong class="theme-text">GOAL:</strong> Match the items in the left column to the correct AVA in the right column.</p>
+                <p><strong class="theme-text">GOAL:</strong> Match the items in the left column to the correct AVA in the right column. Or, find all counties for a given AVA.</p>
                 <p><strong class="theme-text">SCORING:</strong></p>
                 <ul class="list-disc list-inside pl-4 text-gray-600">
                     <li><span class="font-bold text-green-700">+2 points</span> for a correct match on the first try.</li>
@@ -129,6 +140,9 @@
                 </button>
                  <button id="start-sierra-btn" class="w-full sierra-bg text-white font-bold py-3 px-4 rounded-lg sierra-bg-hover transition-colors text-lg">
                     Sierra/Mendo/Lake
+                </button>
+                <button id="start-county-btn" class="w-full county-bg text-white font-bold py-3 px-4 rounded-lg county-bg-hover transition-colors text-lg">
+                    CA Counties
                 </button>
             </div>
         </div>
@@ -161,21 +175,21 @@
 
         <!-- Main Game Area -->
         <div class="game-card rounded-lg p-6 md:p-8">
-            <!-- Updated grid for mobile -->
-            <div class="grid grid-cols-2 gap-4 md:gap-10">
-                <!-- Left Column -->
-                <div>
+            <!-- This grid will be manipulated by JS based on game mode -->
+            <div id="game-grid" class="grid grid-cols-2 gap-4 md:gap-10">
+                <!-- Left Column (for 5v5 games) / Prompt (for County game) -->
+                <div id="left-col-wrapper">
                     <h3 id="column-title" class="text-2xl font-bold text-center mb-4 theme-text">Producers</h3>
                     <div id="left-column" class="flex flex-col space-y-3">
                         <!-- Left buttons will be inserted here -->
                     </div>
                 </div>
 
-                <!-- Right Column -->
-                <div>
+                <!-- Right Column (for 5v5 games) / County Grid (for County game) -->
+                <div id="right-col-wrapper">
                     <h3 id="column-ava-title" class="text-2xl font-bold text-center mb-4 theme-text">AVAs</h3>
                     <div id="right-column" class="flex flex-col space-y-3">
-                        <!-- Right buttons will be inserted here -->
+                        <!-- Right buttons (or county grid) will be inserted here -->
                     </div>
                 </div>
             </div>
@@ -570,7 +584,7 @@
 
         const centralVineyardsData = [
             { name: "Hames Valley Vineyard", ava: "Hames Valley AVA" },
-            { name:Ill: "Pisoni Vineyard", ava: "Santa Lucia Highlands AVA" },
+            { name: "Pisoni Vineyard", ava: "Santa Lucia Highlands AVA" },
             { name: "Gary's Vineyard", ava: "Santa Lucia Highlands AVA" },
             { name: "Enz Vineyard", ava: "Lime Kiln Valley AVA" }
         ];
@@ -677,7 +691,7 @@
             { name: "Les Collines Vineyard", ava: "Walla Walla Valley AVA" },
             { name: "Woodward Canyon", ava: "Walla Walla Valley AVA" },
             { name: "Claar Cellars", ava: "White Bluffs AVA" },
-            { name: "Bacchus Vineyard", ava: "White Bluffs AVA" },
+            { name:G: "Bacchus Vineyard", ava: "White Bluffs AVA" },
             { name: "Dionysis Vineyard", ava: "White Bluffs AVA" },
             { name: "Gamache Vineyard", ava: "White Bluffs AVA" },
             { name: "Sagemoor Vineyard", ava: "White Bluffs AVA" },
@@ -722,7 +736,7 @@
             { name: "McFadden Family Vineyard & Farm", ava: "Potter Valley AVA" },
             { name: "Vecino Vineyards", ava: "Potter Valley AVA" },
             { name: "Emme Wines", ava: "Redwood Valley AVA" },
-            { name:t: "Frey Vineyards", ava: "Redwood Valley AVA" },
+            { name: "Frey Vineyards", ava: "Redwood Valley AVA" },
             { name: "Lolonis Vineyard", ava: "Redwood Valley AVA" },
             { name: "Hawks Butte Ranch", ava: "Yorkville Highlands AVA" },
             { name: "Weir Vineyard", ava: "Yorkville Highlands AVA" },
@@ -744,6 +758,18 @@
             { name: "Taken From Granite", ava: "North Yuba AVA" }
         ];
 
+        // --- CA COUNTY DATABASE ---
+        const countyDataRaw = "Adelaida District, San Luis Obispo; Alexander Valley, Sonoma; Alisos Canyon, Santa Barbara; Alta Mesa, Sacramento; Anderson Valley, Mendocino; Antelope Valley of the California High Desert, Los Angeles, Kern; Arroyo Grande Valley, San Luis Obispo; Arroyo Seco, Monterey; Atlas Peak, Napa; Ballard Canyon, Santa Barbara; Ben Lomond Mountain, Santa Cruz; Benmore Valley, Lake; Bennett Valley, Sonoma; Big Valley District-Lake County, Lake; Borden Ranch, Sacramento, San Joaquin; California Shenandoah Valley, Amador, El Dorado; Calistoga, Napa; Capay Valley, Yolo; Carmel Valley, Monterey; Carneros (Los Carneros), Napa, Sonoma; Central Coast, Alameda, Contra Costa, Monterey, San Benito, San Francisco, San Luis Obispo, San Mateo, Santa Barbara, Santa Clara, Santa Cruz; Chalk Hill, Sonoma; Chalone, Monterey, San Benito; Chiles Valley, Napa; Cienega Valley, San Benito; Clarksburg, Sacramento, Solano, Yolo; Clear Lake, Lake; Clements Hills, San Joaquin; Cole Ranch, Mendocino; Comptche, Mendocino; Contra Costa, Contra Costa; Coombsville, Napa; Cosumnes River, Sacramento; Covelo, Mendocino; Creston District, San Luis Obispo; Crystal Springs of Napa Valley, Napa; Cucamonga Valley, Riverside, San Bernardino; Diablo Grande, Stanislaus; Diamond Mountain District, Napa; Dos Rios, Mendocino; Dry Creek Valley, Sonoma; Dunnigan Hills, Yolo; Eagle Peak Mendocino County, Mendocino; Edna Valley, San Luis Obispo; El Dorado, El Dorado; El Pomar District, San Luis Obispo; Fair Play, El Dorado; Fiddletown, Amador; Fort Ross-Seaview, Sonoma; Fountaingrove District, Sonoma; Gabilan Mountains, Monterey, San Benito; Green Valley of Russian River Valley, Sonoma; Guenoc Valley, Lake; Hames Valley, Monterey; Happy Canyon of Santa Barbara, Santa Barbara; High Valley, Lake; Howell Mountain, Napa; Inwood Valley, Shasta; Jahant, San Joaquin, Sacramento; Kelsey Bench-Lake County, Lake; Knights Valley, Sonoma; Lamorinda, Contra Costa; Leona Valley, Los Angeles; Lime Kiln Valley, San Benito; Livermore Valley, Alameda, Contra Costa; Lodi, Sacramento, San Joaquin; Long Valley-Lake County, Lake; Los Olivos District, Santa Barbara; Madera, Madera, Fresno; Malibu Coast, Los Angeles; Malibu-Newton Canyon, Los Angeles, Ventura; Manton Valley, Shasta, Tehama; McDowell Valley, Mendocino; Mendocino, Mendocino; Mendocino Ridge, Mendocino; Merritt Island, Yolo; Mokelumne River, San Joaquin; Monterey, Monterey; Moon Mountain District Sonoma County, Sonoma; Mt. Harlan, San Benito; Mt. Veeder, Napa; Napa Valley, Napa; North Coast, Napa, Sonoma, Mendocino, Lake, Marin, Solano; North Yuba, Yuba; Northern Sonoma, Sonoma; Oak Knoll District of Napa Valley, Napa; Oakville, Napa; Pacheco Pass, Santa Clara, San Benito; Paicines, San Benito; Palos Verdes Peninsula, Los Angeles; Paso Robles, San Luis Obispo; Paso Robles Estrella District, San Luis Obispo; Paso Robles Geneseo District, San Luis Obispo; Paso Robles Highlands District, San Luis Obispo; Paso Robles Willow Creek District, San Luis Obispo; Petaluma Gap, Sonoma, Marin; Pine Mountain-Cloverdale Peak, Sonoma, Mendocino; Potter Valley, Mendocino; Ramona Valley, San Diego; Red Hills-Lake County, Lake; Redwood Valley, Mendocino; River Junction, San Joaquin; Rockpile, Sonoma; Russian River Valley, Sonoma; Rutherford, Napa; Saddle Rock - Malibu, Los Angeles; Salado Creek, Stanislaus; San Antonio Valley, Monterey; San Bernabe, Monterey; San Benito, San Benito; San Francisco Bay, San Francisco, San Benito, Santa Clara, Santa Cruz, Solano, Alameda, Contra Costa, San Mateo; San Juan Creek, San Luis Obispo; San Lucas, Monterey; San Luis Ray, San Diego; San Luis Obispo Coast, San Luis Obispo; San Miguel District, San Luis Obispo; San Pasqual Valley, San Diego; San Ysidro District, Santa Clara; Santa Clara Valley, Santa Clara; Santa Cruz Mountains, Santa Cruz, San Mateo, Santa Clara; Santa Lucia Highlands, Monterey; Santa Margarita Ranch, San Luis Obispo; Santa Maria Valley, Santa Barbara, San Luis Obispo; Santa Ynez Valley, Santa Barbara; Seiad Valley, Siskiyou; Sierra Foothills, Amador, Calaveras, El Dorado, Mariposa, Nevada, Placer, Tuolumne, Yuba; Sierra Pelona, Los Angeles; Sloughhouse, Sacramento; Solano County Green Valley, Solano; Sonoma Coast, Sonoma; Sonoma Mountain, Sonoma; Sonoma Valley, Sonoma; South Coast, Riverside, San Diego, San Bernardino, Orange, Los Angeles; Spring Mountain District, Napa; Squaw Valley-Miramonte, Fresno; St. Helena, Napa; Sta. Rita Hills, Santa Barbara; Paulsell Valley, Stanislaus; Stags Leap District, Napa; Suisun Valley, Solano; Tehachapi Mountains, Kern; Temecula Valley, Riverside; Templeton Gap District, San Luis Obispo; Tracy Hills, San Joaquin, Stanislaus; Trinity Lakes, Trinity; Upper Lake Valley, Lake; West Sonoma Coast, Sonoma; Wild Horse Valley, Napa, Solano; Winters Highlands, Solano, Yolo; Willow Creek, Humboldt, Trinity; York Mountain, San Luis Obispo; Yorkville Highlands, Mendocino; Yountville, Napa; Yucaipa Valley, San Bernardino";
+        
+        const countyData = countyDataRaw.split(';').map(entry => {
+            const parts = entry.trim().split(',').map(part => part.trim());
+            const ava = parts[0];
+            const counties = parts.slice(1);
+            return { ava, counties };
+        }).filter(e => e.ava && e.counties.length > 0); // Ensure valid entries
+        
+        const allCounties = [...new Set(countyData.flatMap(entry => entry.counties))].sort();
+
 
         // --- GAME DATA WRAPPERS ---
         const sonomaGameData = {
@@ -751,7 +777,8 @@
             producers: sonomaProducersData,
             vineyards: sonomaVineyardsData,
             theme: "theme-text", // Green
-            totalRounds: 20
+            totalRounds: 20,
+            gameType: 'ava'
         };
         
         const napaGameData = {
@@ -759,7 +786,8 @@
             producers: napaProducersData,
             vineyards: napaVineyardsData,
             theme: "napa-text", // Purple
-            totalRounds: 20
+            totalRounds: 20,
+            gameType: 'ava'
         };
 
         const allCentralData = [...centralProducersData, ...centralVineyardsData];
@@ -767,42 +795,62 @@
             title: "Central Coast Master",
             allData: allCentralData, // Combined list
             theme: "central-text", // Blue
-            totalRounds: 20
+            totalRounds: 20,
+            gameType: 'ava'
         };
 
         const oregonGameData = {
             title: "Oregon AVA Master",
             allData: allOregonData,
             theme: "oregon-text", // Emerald
-            totalRounds: 10
+            totalRounds: 10,
+            gameType: 'ava'
         };
 
         const washingtonGameData = {
             title: "Washington AVA Master",
             allData: allWashingtonData,
             theme: "washington-text", // Sky
-            totalRounds: 10
+            totalRounds: 10,
+            gameType: 'ava'
         };
 
         const sierraMendoLakeGameData = {
             title: "Sierra/Mendo/Lake Master",
             allData: allSierraMendoLakeData,
             theme: "sierra-text", // Amber
-            totalRounds: 10
+            totalRounds: 10,
+            gameType: 'ava'
+        };
+
+        const countyGameData = {
+            title: "CA County Master",
+            data: countyData,
+            allCounties: allCounties,
+            theme: "county-text", // Poppy
+            totalRounds: 20,
+            gameType: 'county'
         };
 
         // --- GAME STATE ---
         let currentRound = 1;
         let totalScore = 0;
         let maxPossibleScore = 0;
-        let totalRounds = 20; // Will be set by startGameFlow
+        let totalRounds = 20;
         const itemsPerRound = 5;
 
+        // 5v5 game state
         let selectedLeft = null;
         let selectedRight = null;
         let matchesMade = 0;
-        let firstAttemptMap = new Map();
-        let activeGameData = null; // Will be set to one of the game data wrappers
+        
+        // County game state
+        let currentCountyRoundData = null;
+        let correctCountiesSet = new Set();
+        let countiesRemaining = 0;
+
+        let firstAttemptMap = new Map(); // Used by both games, reset each round
+        let activeGameData = null;
 
         // --- DOM ELEMENTS ---
         const gameContainer = document.getElementById('game-container');
@@ -813,14 +861,24 @@
         const startOregonBtn = document.getElementById('start-oregon-btn');
         const startWashingtonBtn = document.getElementById('start-washington-btn');
         const startSierraBtn = document.getElementById('start-sierra-btn');
+        const startCountyBtn = document.getElementById('start-county-btn');
         const mainMenuBtn = document.getElementById('main-menu-btn');
         const gameTitle = document.getElementById('game-title');
         const scoreInfo = document.getElementById('score-info');
         const roundInfo = document.getElementById('round-info');
-        const columnTitle = document.getElementById('column-title');
-        const columnAvaTitle = document.getElementById('column-ava-title');
+
+        // Game Grid wrappers
+        const gameGrid = document.getElementById('game-grid');
+        const leftColWrapper = document.getElementById('left-col-wrapper');
+        const rightColWrapper = document.getElementById('right-col-wrapper');
+        
+        // Column content
+        const columnTitle = document.getElementById('column-title'); // Re-used for county prompt
         const leftColumn = document.getElementById('left-column');
-        const rightColumn = document.getElementById('right-column');
+        const columnAvaTitle = document.getElementById('column-ava-title');
+        const rightColumn = document.getElementById('right-column'); // Re-used for county grid
+
+        // Modals
         const successModal = document.getElementById('success-modal');
         const gameOverModal = document.getElementById('game-over-modal');
         const gameOverTitle = document.getElementById('game-over-title');
@@ -837,72 +895,11 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
         }
-
-        /** Selects 5 unique items from a data source for the round. */
-        function getRoundData() {
-            let dataSource;
-            
-            if (activeGameData.allData) {
-                // Use combined list for Central Coast, Oregon, Washington
-                dataSource = activeGameData.allData;
-                columnTitle.textContent = "Producers & Vineyards";
-            } else {
-                // Use separate lists for Sonoma and Napa
-                const roundGroup = Math.floor((currentRound - 1) / 5);
-                if (roundGroup === 0 || roundGroup === 2) {
-                    dataSource = activeGameData.producers;
-                    columnTitle.textContent = "Producers";
-                } else {
-                    dataSource = activeGameData.vineyards;
-                    columnTitle.textContent = "Vineyards";
-                }
-            }
-
-            const shuffledSource = [...dataSource];
-            shuffleArray(shuffledSource);
-
-            // Pick 5 items with unique AVAs
-            const roundItems = [];
-            const avasInRound = new Set();
-            for (const item of shuffledSource) {
-                // Ensure item has a name and ava
-                if (item.name && item.ava && !avasInRound.has(item.ava)) {
-                    roundItems.push(item);
-                    avasInRound.add(item.ava);
-                }
-                if (roundItems.length === itemsPerRound) {
-                    break;
-                }
-            }
-            
-            // Fallback: If we still don't have 5 items (e.g., small data source),
-            // fill the rest, even if AVAs are duplicated.
-            if (roundItems.length < itemsPerRound) {
-                 for (const item of shuffledSource) {
-                     if (item.name && item.ava && !roundItems.find(i => i.name === item.name)) {
-                         roundItems.push(item);
-                     }
-                     if (roundItems.length === itemsPerRound) {
-                         break;
-                     }
-                 }
-            }
-
-            const finalLeftData = roundItems.map(item => ({ name: item.name, ava: item.ava }));
-            // Get unique AVAs from the left data for the right column
-            const finalRightData = Array.from(new Set(roundItems.map(item => item.ava)));
-
-            // Shuffle both columns independently
-            shuffleArray(finalLeftData);
-            shuffleArray(finalRightData);
-
-            return { leftData: finalLeftData, rightData: finalRightData };
-        }
         
         /** Applies correct theme colors */
         function applyTheme() {
             const themeClass = activeGameData.theme;
-            const themes = ["theme-text", "napa-text", "central-text", "oregon-text", "washington-text", "sierra-text"];
+            const themes = ["theme-text", "napa-text", "central-text", "oregon-text", "washington-text", "sierra-text", "county-text"];
             const otherThemes = themes.filter(t => t !== themeClass);
             
             // Apply theme to titles
@@ -918,9 +915,13 @@
                 "central-text": ["central-bg", "central-bg-hover"],
                 "oregon-text": ["oregon-bg", "oregon-bg-hover"],
                 "washington-text": ["washington-bg", "washington-bg-hover"],
-                "sierra-text": ["sierra-bg", "sierra-bg-hover"]
+                "sierra-text": ["sierra-bg", "sierra-bg-hover"],
+                "county-text": ["county-bg", "county-bg-hover"]
             };
-            const [bgClass, hoverClass] = buttonThemes[themeClass];
+            
+            const themeKey = Object.keys(buttonThemes).find(key => themeClass.includes(key)) || "theme-text";
+            const [bgClass, hoverClass] = buttonThemes[themeKey];
+            
             const otherBg = Object.values(buttonThemes).map(t => t[0]).filter(c => c !== bgClass);
             const otherHover = Object.values(buttonThemes).map(t => t[1]).filter(c => c !== hoverClass);
 
@@ -933,13 +934,48 @@
         // --- GAME LOGIC ---
 
         function startGameFlow(gameData) {
-            activeGameData = gameData;
-            totalRounds = activeGameData.totalRounds; // Set total rounds for this game
+            activeGameData = gameData; // Includes gameType
+            totalRounds = activeGameData.totalRounds;
             gameTitle.textContent = activeGameData.title;
+            
             applyTheme();
+            setupGameUI(activeGameData.gameType);
+            
             startModal.classList.add('hidden');
             gameContainer.classList.remove('hidden');
+            
             initGame();
+        }
+        
+        function setupGameUI(gameType) {
+             if (gameType === 'county') {
+                gameGrid.classList.remove('grid-cols-2', 'md:gap-10');
+                gameGrid.classList.add('grid-cols-1');
+                leftColWrapper.classList.remove('hidden'); // Use this for the prompt
+                rightColWrapper.classList.remove('hidden');
+                
+                columnTitle.classList.add('text-3xl'); // Make prompt bigger
+                columnTitle.textContent = "Loading AVA..."; // Will be set in startRound
+                
+                columnAvaTitle.classList.add('hidden'); // Hide 5v5 title
+                leftColumn.classList.add('hidden'); // Hide 5v5 left column
+                
+                rightColumn.classList.remove('flex', 'flex-col', 'space-y-3');
+                rightColumn.classList.add('grid', 'grid-cols-3', 'sm:grid-cols-4', 'md:grid-cols-6', 'gap-2');
+            } else { // 'ava' game type
+                gameGrid.classList.add('grid-cols-2', 'md:gap-10');
+                gameGrid.classList.remove('grid-cols-1');
+                leftColWrapper.classList.remove('hidden');
+                rightColWrapper.classList.remove('hidden');
+
+                columnTitle.classList.remove('text-3xl');
+                columnAvaTitle.classList.remove('hidden');
+
+                leftColumn.classList.remove('hidden');
+
+                rightColumn.classList.add('flex', 'flex-col', 'space-y-3');
+                rightColumn.classList.remove('grid', 'grid-cols-3', 'sm:grid-cols-4', 'md:grid-cols-6', 'gap-2');
+            }
         }
         
         function goToMainMenu() {
@@ -952,59 +988,118 @@
             currentRound = 1;
             totalScore = 0;
             maxPossibleScore = 0;
+            // Shuffle the data for the entire game
+            if (activeGameData.data) {
+                shuffleArray(activeGameData.data);
+            }
             startRound();
         }
 
         function startRound() {
-            // Reset round state
-            matchesMade = 0;
-            selectedLeft = null;
-            selectedRight = null;
+            // Reset common round state
             firstAttemptMap.clear();
-            leftColumn.innerHTML = '';
-            rightColumn.innerHTML = '';
-
+            
             // Update displays
             roundInfo.textContent = `${currentRound} / ${totalRounds}`;
             scoreInfo.textContent = totalScore;
-
-            const { leftData, rightData } = getRoundData();
             
-            // Max score is 5 items * 2 points/item
-            maxPossibleScore += (itemsPerRound * 2);
+            // Route to the correct round setup
+            if (activeGameData.gameType === 'county') {
+                startCountyRound();
+            } else {
+                startAvaRound();
+            }
+        }
+        
+        // --- AVA 5v5 Game Functions ---
+        
+        function startAvaRound() {
+            matchesMade = 0;
+            selectedLeft = null;
+            selectedRight = null;
+            leftColumn.innerHTML = '';
+            rightColumn.innerHTML = '';
+
+            const { leftData, rightData } = getAvaRoundData();
+            
+            maxPossibleScore += (leftData.length * 2);
 
             // Populate left column
             leftData.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-choice w-full text-left p-4 rounded-lg font-semibold';
+                btn.className = 'btn-choice btn-choice-lg w-full text-left p-4 rounded-lg font-semibold';
                 btn.textContent = item.name;
                 btn.dataset.name = item.name;
                 btn.dataset.ava = item.ava;
-                btn.addEventListener('click', () => handleLeftClick(btn, item.name, item.ava));
+                btn.addEventListener('click', () => handleAvaLeftClick(btn, item.name, item.ava));
                 leftColumn.appendChild(btn);
-                // Initialize attempt tracking for this item
                 firstAttemptMap.set(item.name, true);
             });
 
             // Populate right column
             rightData.forEach(ava => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-choice w-full text-left p-4 rounded-lg font-semibold';
+                btn.className = 'btn-choice btn-choice-lg w-full text-left p-4 rounded-lg font-semibold';
                 btn.textContent = ava;
                 btn.dataset.ava = ava;
-                btn.addEventListener('click', () => handleRightClick(btn, ava));
+                btn.addEventListener('click', () => handleAvaRightClick(btn, ava));
                 rightColumn.appendChild(btn);
             });
         }
+        
+        function getAvaRoundData() {
+            let dataSource;
+            
+            if (activeGameData.allData) {
+                dataSource = activeGameData.allData;
+                columnTitle.textContent = "Producers & Vineyards";
+            } else {
+                const roundGroup = Math.floor((currentRound - 1) / 5);
+                if (roundGroup === 0 || roundGroup === 2) {
+                    dataSource = activeGameData.producers;
+                    columnTitle.textContent = "Producers";
+                } else {
+                    dataSource = activeGameData.vineyards;
+                    columnTitle.textContent = "Vineyards";
+                }
+            }
 
-        function handleLeftClick(element, name, ava) {
+            const shuffledSource = [...dataSource];
+            shuffleArray(shuffledSource);
+
+            const roundItems = [];
+            const avasInRound = new Set();
+            for (const item of shuffledSource) {
+                if (item.name && item.ava && !avasInRound.has(item.ava)) {
+                    roundItems.push(item);
+                    avasInRound.add(item.ava);
+                }
+                if (roundItems.length === itemsPerRound) break;
+            }
+            
+            if (roundItems.length < itemsPerRound) {
+                 for (const item of shuffledSource) {
+                     if (item.name && item.ava && !roundItems.find(i => i.name === item.name)) {
+                         roundItems.push(item);
+                     }
+                     if (roundItems.length === itemsPerRound) break;
+                 }
+            }
+
+            const finalLeftData = roundItems.map(item => ({ name: item.name, ava: item.ava }));
+            const finalRightData = Array.from(new Set(roundItems.map(item => item.ava)));
+
+            shuffleArray(finalLeftData);
+            shuffleArray(finalRightData);
+
+            return { leftData: finalLeftData, rightData: finalRightData };
+        }
+        
+        function handleAvaLeftClick(element, name, ava) {
             if (element.classList.contains('correct')) return;
-
-            // Deselect previous left button
             if (selectedLeft && selectedLeft.element !== element) {
                 selectedLeft.element.classList.remove('selected');
             }
-            // Toggle selection
             if (selectedLeft && selectedLeft.element === element) {
                 selectedLeft.element.classList.remove('selected');
                 selectedLeft = null;
@@ -1012,17 +1107,14 @@
                 element.classList.add('selected');
                 selectedLeft = { element, name, ava };
             }
-            checkMatch();
+            checkAvaMatch();
         }
 
-        function handleRightClick(element, ava) {
+        function handleAvaRightClick(element, ava) {
             if (element.classList.contains('correct')) return;
-
-            // Deselect previous right button
             if (selectedRight && selectedRight.element !== element) {
                 selectedRight.element.classList.remove('selected');
             }
-            // Toggle selection
             if (selectedRight && selectedRight.element === element) {
                 selectedRight.element.classList.remove('selected');
                 selectedRight = null;
@@ -1030,10 +1122,10 @@
                 element.classList.add('selected');
                 selectedRight = { element, ava };
             }
-            checkMatch();
+            checkAvaMatch();
         }
 
-        function checkMatch() {
+        function checkAvaMatch() {
             if (!selectedLeft || !selectedRight) return;
 
             const leftBtn = selectedLeft.element;
@@ -1041,10 +1133,9 @@
             const isFirstAttempt = firstAttemptMap.get(selectedLeft.name);
 
             if (selectedLeft.ava === selectedRight.ava) {
-                // --- CORRECT MATCH ---
                 matchesMade++;
-                leftBtn.classList.remove('selected');
-                rightBtn.classList.remove('selected');
+                leftBtn.classList.remove('selected', 'incorrect');
+                rightBtn.classList.remove('selected', 'incorrect');
                 leftBtn.classList.add('correct');
                 rightBtn.classList.add('correct');
                 leftBtn.disabled = true;
@@ -1055,43 +1146,101 @@
                 } else {
                     totalScore += 1;
                 }
-                scoreInfo.textContent = totalScore;
                 
-                // Check if round is over (match count equals number of items)
                 if (matchesMade === leftColumn.children.length) {
                     setTimeout(showSuccessModal, 500);
                 }
             } else {
-                // --- INCORRECT MATCH ---
-                totalScore = Math.max(0, totalScore - 1); // Don't go below 0
-                scoreInfo.textContent = totalScore;
-                // Mark this item as no longer the first attempt
+                totalScore = Math.max(0, totalScore - 1);
                 firstAttemptMap.set(selectedLeft.name, false);
                 flashIncorrect(leftBtn, rightBtn);
             }
 
-            // Reset selections
-            if (selectedLeft && !selectedLeft.element.classList.contains('correct')) {
-                 selectedLeft.element.classList.remove('selected');
-            }
-            if (selectedRight && !selectedRight.element.classList.contains('correct')) {
-                 selectedRight.element.classList.remove('selected');
-            }
+            scoreInfo.textContent = totalScore;
             selectedLeft = null;
             selectedRight = null;
+            // Deselect buttons
+            setTimeout(() => {
+                if (leftBtn && !leftBtn.classList.contains('correct')) leftBtn.classList.remove('selected');
+                if (rightBtn && !rightBtn.classList.contains('correct')) rightBtn.classList.remove('selected');
+            }, 100);
         }
+
+        // --- County Game Functions ---
+        
+        function startCountyRound() {
+            currentCountyRoundData = activeGameData.data[currentRound - 1];
+            correctCountiesSet = new Set(currentCountyRoundData.counties);
+            countiesRemaining = correctCountiesSet.size;
+            
+            maxPossibleScore += (countiesRemaining * 2);
+            
+            updateCountyPrompt();
+            rightColumn.innerHTML = ''; // Clear old grid
+            
+            // Populate grid with all possible counties
+            activeGameData.allCounties.forEach(countyName => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-choice w-full text-center rounded-lg font-semibold';
+                btn.textContent = countyName;
+                btn.dataset.name = countyName;
+                btn.addEventListener('click', () => handleCountyClick(btn, countyName));
+                rightColumn.appendChild(btn);
+            });
+        }
+        
+        function handleCountyClick(btn, countyName) {
+            if (btn.disabled) return; // Already correct
+            
+            const isFirst = !firstAttemptMap.has(countyName);
+            firstAttemptMap.set(countyName, true); // Mark as attempted
+            
+            if (correctCountiesSet.has(countyName)) {
+                // --- CORRECT ---
+                btn.classList.remove('incorrect');
+                btn.classList.add('correct');
+                btn.disabled = true;
+                
+                if (isFirst) {
+                    totalScore += 2;
+                } else {
+                    totalScore += 1;
+                }
+                
+                countiesRemaining--;
+                updateCountyPrompt();
+                
+                if (countiesRemaining === 0) {
+                    setTimeout(showSuccessModal, 500);
+                }
+                
+            } else {
+                // --- INCORRECT ---
+                if (!btn.classList.contains('incorrect')) {
+                     btn.classList.add('incorrect');
+                }
+                totalScore = Math.max(0, totalScore - 1);
+            }
+            scoreInfo.textContent = totalScore;
+        }
+        
+        function updateCountyPrompt() {
+            columnTitle.textContent = `${currentCountyRoundData.ava} (${countiesRemaining} left)`;
+        }
+
+
+        // --- COMMON GAME FLOW FUNCTIONS ---
 
         function flashIncorrect(btn1, btn2) {
             btn1.classList.add('incorrect');
             btn2.classList.add('incorrect');
             setTimeout(() => {
-                btn1.classList.remove('incorrect');
-                btn2.classList.remove('incorrect');
+                btn1.classList.remove('incorrect', 'selected');
+                btn2.classList.remove('incorrect', 'selected');
             }, 500);
         }
 
         function showSuccessModal() {
-            // Check if game is over *before* showing success modal
             if (currentRound === totalRounds) {
                 setTimeout(endGame, 200); // Go straight to end game
                 return;
@@ -1108,7 +1257,7 @@
             setTimeout(() => {
                 successModal.classList.add('hidden');
                 currentRound++;
-                startRound();
+                startRound(); // This will call the correct round type based on activeGameData.gameType
             }, 200);
         }
 
@@ -1132,9 +1281,8 @@
             finalPercentageEl.textContent = `${percentage}%`;
             finalScoreMessage.textContent = feedback;
 
-            // Hide success modal if it's somehow open
             successModal.classList.add('hidden');
-
+    
             gameOverModal.classList.remove('hidden');
             setTimeout(() => {
                 gameOverModal.firstElementChild.classList.remove('scale-95', 'opacity-0');
@@ -1145,7 +1293,6 @@
             gameOverModal.firstElementChild.classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
                 gameOverModal.classList.add('hidden');
-                // Show start modal instead of restarting
                 goToMainMenu();
             }, 200);
         }
@@ -1157,6 +1304,7 @@
         startOregonBtn.addEventListener('click', () => startGameFlow(oregonGameData));
         startWashingtonBtn.addEventListener('click', () => startGameFlow(washingtonGameData));
         startSierraBtn.addEventListener('click', () => startGameFlow(sierraMendoLakeGameData));
+        startCountyBtn.addEventListener('click', () => startGameFlow(countyGameData));
         mainMenuBtn.addEventListener('click', goToMainMenu);
         
         nextRoundBtn.addEventListener('click', hideSuccessModal);
