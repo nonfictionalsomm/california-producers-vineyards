@@ -105,9 +105,8 @@
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div id="start-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-3xl w-full text-center transform transition-all">
-            <h2 class="text-4xl font-bold mb-4 theme-text">AVA Challenge</h2>
+    <div id="start-modal" class="fixed inset-0 z-50 flex justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-3xl w-full text-center transform transition-all my-8"> <h2 class="text-4xl font-bold mb-4 theme-text">AVA Challenge</h2>
             <p class="text-lg mb-6 text-left text-gray-700">Test your knowledge by matching Producers, Vineyards, or Counties to their correct AVAs.</p>
             <div class="text-left space-y-3 mb-8 theme-bg-light p-4 rounded-lg border theme-border-light">
                 <p><strong class="theme-text">GOAL:</strong> Match the items in the left column to the correct AVA in the right column. Or, find all counties for a given AVA.</p>
@@ -403,7 +402,7 @@
             { name: "Cliff Lede", ava: "Stags Leap District AVA" },
             { name: "Clos du Val", ava: "Stags Leap District AVA" },
             { name: "Futo 5500", ava: "Stags Leap District AVA" },
-            { name: "Hartwell", ava: "Stags Leap District AVA" },
+            { name:im: "Hartwell", ava: "Stags Leap District AVA" },
             { name: "Odette", ava: "Stags Leap District AVA" },
             { name: "Pine Ridge", ava: "Stags Leap District AVA" },
             { name: "Poetry", ava: "Stags Leap District AVA" },
@@ -676,7 +675,7 @@
             { name: "Les Collines Vineyard", ava: "Walla Walla Valley AVA" },
             { name: "Woodward Canyon", ava: "Walla Walla Valley AVA" },
             { name: "Claar Cellars", ava: "White Bluffs AVA" },
-            { name: "Bacchus Vineyard", ava: "White Bluffs AVA" }, // *** THIS WAS THE FIXED LINE ***
+            { name: "Bacchus Vineyard", ava: "White Bluffs AVA" }, // This was the syntax error fix
             { name: "Dionysis Vineyard", ava: "White Bluffs AVA" },
             { name: "Gamache Vineyard", ava: "White Bluffs AVA" },
             { name: "Sagemoor Vineyard", ava: "White Bluffs AVA" },
@@ -721,7 +720,7 @@
             { name: "McFadden Family Vineyard & Farm", ava: "Potter Valley AVA" },
             { name: "Vecino Vineyards", ava: "Potter Valley AVA" },
             { name: "Emme Wines", ava: "Redwood Valley AVA" },
-            { name: "Frey Vineyards", ava: "Redwood Valley AVA" },
+            { name:E: "Frey Vineyards", ava: "Redwood Valley AVA" },
             { name: "Lolonis Vineyard", ava: "Redwood Valley AVA" },
             { name: "Hawks Butte Ranch", ava: "Yorkville Highlands AVA" },
             { name: "Weir Vineyard", ava: "Yorkville Highlands AVA" },
@@ -1153,10 +1152,15 @@
 
         // --- County Game Functions ---
         
+        /**
+         * UPDATED FUNCTION:
+         * This now builds a smaller pool of 30 counties (or fewer if the total is less)
+         * It includes all correct counties and fills the rest with random distractors.
+         */
         function startCountyRound() {
             currentCountyRoundData = activeGameData.data[currentRound - 1];
             correctCountiesSet = new Set(currentCountyRoundData.counties);
-            const correctCounties = currentCountyRoundData.counties;
+            const correctCounties = currentCountyRoundData.counties; // Get array of correct names
             countiesRemaining = correctCountiesSet.size;
             
             maxPossibleScore += (countiesRemaining * 2);
@@ -1166,7 +1170,6 @@
 
             // --- NEW LOGIC ---
             // Create a challenging but not overwhelming pool of counties
-
             const maxPoolSize = 30; // Max 30 buttons on screen
             
             // 1. Get all possible distractors (all counties EXCEPT the correct ones)
@@ -1193,6 +1196,45 @@
                 btn.addEventListener('click', () => handleCountyClick(btn, countyName));
                 rightColumn.appendChild(btn);
             });
+        }
+        
+        function handleCountyClick(btn, countyName) {
+            if (btn.disabled) return; // Already correct
+            
+            const isFirst = !firstAttemptMap.has(countyName);
+            firstAttemptMap.set(countyName, true); // Mark as attempted
+            
+            if (correctCountiesSet.has(countyName)) {
+                // --- CORRECT ---
+                btn.classList.remove('incorrect');
+                btn.classList.add('correct');
+                btn.disabled = true;
+                
+                if (isFirst) {
+                    totalScore += 2;
+                } else {
+                    totalScore += 1;
+                }
+                
+                countiesRemaining--;
+                updateCountyPrompt();
+                
+                if (countiesRemaining === 0) {
+                    setTimeout(showSuccessModal, 500);
+                }
+                
+            } else {
+                // --- INCORRECT ---
+                if (!btn.classList.contains('incorrect')) {
+                     btn.classList.add('incorrect');
+                }
+                totalScore = Math.max(0, totalScore - 1);
+            }
+            scoreInfo.textContent = totalScore;
+        }
+        
+        function updateCountyPrompt() {
+            columnTitle.textContent = `${currentCountyRoundData.ava} (${countiesRemaining} left)`;
         }
 
 
