@@ -48,6 +48,11 @@
         .washington-bg { background-color: #0369A1; }
         .washington-bg-hover:hover { background-color: #075985; }
 
+        /* Sierra/Mendo/Lake Theme (Amber) */
+        .sierra-text { color: #92400E; }
+        .sierra-bg { background-color: #92400E; }
+        .sierra-bg-hover:hover { background-color: #78350F; }
+
         /* Game styles */
         .game-card {
             background-color: #FFFFFF;
@@ -121,6 +126,9 @@
                 </button>
                 <button id="start-washington-btn" class="w-full washington-bg text-white font-bold py-3 px-4 rounded-lg washington-bg-hover transition-colors text-lg">
                     Washington
+                </button>
+                 <button id="start-sierra-btn" class="w-full sierra-bg text-white font-bold py-3 px-4 rounded-lg sierra-bg-hover transition-colors text-lg">
+                    Sierra/Mendo/Lake
                 </button>
             </div>
         </div>
@@ -289,7 +297,7 @@
             { name: "B.A. Thieriot Vineyard", ava: "West Sonoma Coast AVA" }
         ];
 
-        // --- NAPA DATABASE (Updated) ---
+        // --- NAPA DATABASE ---
         const napaProducersData = [
             { name: "Antica", ava: "Atlas Peak AVA" },
             { name: "Au Sommet", ava: "Atlas Peak AVA" },
@@ -562,7 +570,7 @@
 
         const centralVineyardsData = [
             { name: "Hames Valley Vineyard", ava: "Hames Valley AVA" },
-            { name: "Pisoni Vineyard", ava: "Santa Lucia Highlands AVA" },
+            { name:Ill: "Pisoni Vineyard", ava: "Santa Lucia Highlands AVA" },
             { name: "Gary's Vineyard", ava: "Santa Lucia Highlands AVA" },
             { name: "Enz Vineyard", ava: "Lime Kiln Valley AVA" }
         ];
@@ -678,6 +686,65 @@
             { name: "Red Willow Vineyard", ava: "Yakima Valley AVA" }
         ];
 
+        // --- SIERRA/MENDO/LAKE DATABASE ---
+        const allSierraMendoLakeData = [
+            // Lake County
+            { name: "Geyser Peak Winery", ava: "Benmore Valley AVA" },
+            { name: "Hill Top Oaks Winery", ava: "Big Valley District-Lake County AVA" },
+            { name: "Exit West Wines", ava: "Big Valley District-Lake County AVA" },
+            { name: "Steele Wines", ava: "Clear Lake AVA" },
+            { name: "Sunce Winery", ava: "Clear Lake AVA" },
+            { name: "Langtry Farms", ava: "Guenoc Valley AVA" },
+            { name: "Brassfield Estate Winery", ava: "High Valley AVA" },
+            { name: "Shannon Ridge Wines", ava: "High Valley AVA" },
+            { name: "Dancing Crow Vineyards", ava: "Kelsey Bench-Lake County AVA" },
+            { name: "Prima Materia Winery", ava: "Kelsey Bench-Lake County AVA" },
+            { name: "Hawk and Horse Vineyards", ava: "Red Hills-Lake County AVA" },
+            { name: "Obsidian Wine Co.", ava: "Red Hills-Lake County AVA" },
+            { name: "Elk Mountain Winery", ava: "Upper Lake Valley AVA" },
+            { name: "Elk Mountain Vineyard", ava: "Upper Lake Valley AVA" },
+            // Mendocino County
+            { name: "Roederer Estate", ava: "Anderson Valley AVA" },
+            { name: "Goldeneye", ava: "Anderson Valley AVA" },
+            { name: "Savoy", ava: "Anderson Valley AVA" },
+            { name: "Cerise", ava: "Anderson Valley AVA" },
+            { name: "Bearwallow", ava: "Anderson Valley AVA" },
+            { name: "Ferrington", ava: "Anderson Valley AVA" },
+            { name: "Mike Lucia", ava: "Cole Ranch AVA" },
+            { name: "John Cole", ava: "Cole Ranch AVA" },
+            { name: "Comptche Ridge", ava: "Comptche AVA" },
+            { name: "Vin de Tevis", ava: "Dos Rios AVA" },
+            { name: "Masút", ava: "Eagle Peak Mendocino County AVA" },
+            { name: "McDowell Valley Vineyards", ava: "McDowell Valley AVA" },
+            { name: "Manchester Ridge", ava: "Mendocino Ridge AVA" },
+            { name: "Signal Ridge", ava: "Mendocino Ridge AVA" },
+            { name: "Perli", ava: "Mendocino Ridge AVA" },
+            { name: "McFadden Family Vineyard & Farm", ava: "Potter Valley AVA" },
+            { name: "Vecino Vineyards", ava: "Potter Valley AVA" },
+            { name: "Emme Wines", ava: "Redwood Valley AVA" },
+            { name:t: "Frey Vineyards", ava: "Redwood Valley AVA" },
+            { name: "Lolonis Vineyard", ava: "Redwood Valley AVA" },
+            { name: "Hawks Butte Ranch", ava: "Yorkville Highlands AVA" },
+            { name: "Weir Vineyard", ava: "Yorkville Highlands AVA" },
+            { name: "Halcon", ava: "Yorkville Highlands AVA" },
+            { name: "Randle Hill", ava: "Yorkville Highlands AVA" },
+            // Sierra Foothills
+            { name: "Domaine de la Terre Rouge", ava: "California Shenandoah Valley AVA" },
+            { name: "Deaver Vineyards", ava: "California Shenandoah Valley AVA" },
+            { name: "The Withers Winery", ava: "El Dorado AVA" },
+            { name: "Skinner Vineyards", ava: "El Dorado AVA" },
+            { name: "Lava Cap Winery", ava: "El Dorado AVA" },
+            { name: "Oakstone Winery", ava: "Fair Play AVA" },
+            { name: "Golden Leaves Winery", ava: "Fair Play AVA" },
+            { name: "Element 79 Winery", ava: "Fair Play AVA" },
+            { name: "Terre Rouge and Easton Wines", ava: "Fiddletown AVA" },
+            { name: "Rinaldi Vineyard", ava: "Fiddletown AVA" },
+            { name: "Clos Saron", ava: "North Yuba AVA" },
+            { name: "Renaissance Vineyard & Winery", ava: "North Yuba AVA" },
+            { name: "Taken From Granite", ava: "North Yuba AVA" }
+        ];
+
+
         // --- GAME DATA WRAPPERS ---
         const sonomaGameData = {
             title: "Sonoma AVA Master",
@@ -717,6 +784,13 @@
             totalRounds: 10
         };
 
+        const sierraMendoLakeGameData = {
+            title: "Sierra/Mendo/Lake Master",
+            allData: allSierraMendoLakeData,
+            theme: "sierra-text", // Amber
+            totalRounds: 10
+        };
+
         // --- GAME STATE ---
         let currentRound = 1;
         let totalScore = 0;
@@ -738,6 +812,7 @@
         const startCentralBtn = document.getElementById('start-central-btn');
         const startOregonBtn = document.getElementById('start-oregon-btn');
         const startWashingtonBtn = document.getElementById('start-washington-btn');
+        const startSierraBtn = document.getElementById('start-sierra-btn');
         const mainMenuBtn = document.getElementById('main-menu-btn');
         const gameTitle = document.getElementById('game-title');
         const scoreInfo = document.getElementById('score-info');
@@ -827,7 +902,7 @@
         /** Applies correct theme colors */
         function applyTheme() {
             const themeClass = activeGameData.theme;
-            const themes = ["theme-text", "napa-text", "central-text", "oregon-text", "washington-text"];
+            const themes = ["theme-text", "napa-text", "central-text", "oregon-text", "washington-text", "sierra-text"];
             const otherThemes = themes.filter(t => t !== themeClass);
             
             // Apply theme to titles
@@ -842,7 +917,8 @@
                 "napa-text": ["napa-bg", "napa-bg-hover"],
                 "central-text": ["central-bg", "central-bg-hover"],
                 "oregon-text": ["oregon-bg", "oregon-bg-hover"],
-                "washington-text": ["washington-bg", "washington-bg-hover"]
+                "washington-text": ["washington-bg", "washington-bg-hover"],
+                "sierra-text": ["sierra-bg", "sierra-bg-hover"]
             };
             const [bgClass, hoverClass] = buttonThemes[themeClass];
             const otherBg = Object.values(buttonThemes).map(t => t[0]).filter(c => c !== bgClass);
@@ -1080,6 +1156,7 @@
         startCentralBtn.addEventListener('click', () => startGameFlow(centralGameData));
         startOregonBtn.addEventListener('click', () => startGameFlow(oregonGameData));
         startWashingtonBtn.addEventListener('click', () => startGameFlow(washingtonGameData));
+        startSierraBtn.addEventListener('click', () => startGameFlow(sierraMendoLakeGameData));
         mainMenuBtn.addEventListener('click', goToMainMenu);
         
         nextRoundBtn.addEventListener('click', hideSuccessModal);
